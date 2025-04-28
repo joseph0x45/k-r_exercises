@@ -1,22 +1,41 @@
 #include <stdio.h>
 #define IN 1
 #define OUT 0
+#define MAX_LEN 10
 
 int main() {
-  int c, current_length, state;
-  c = current_length = 0;
+  int state, c, current_length;
   state = OUT;
+  current_length = c = 0;
+  int histogram[MAX_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
   while ((c = getchar()) != EOF) {
-    if (c == ' ' || c == '\n' || c == '\t') {
-      state = OUT;
-      for (int i = 0; i < current_length; i++) {
-        printf("*");
+    if (c == ' ' || c == '\t' || c == '\n') {
+      if (state == IN) {
+        if (current_length + 1 >= MAX_LEN) {
+          current_length = MAX_LEN - 1;
+        }
+        histogram[current_length - 1]++;
       }
-      printf("\n");
+      state = OUT;
       current_length = 0;
-    } else if (state == OUT) {
-      ++current_length;
+    } else {
+      state = IN;
+      current_length++;
     }
+  }
+  if (state == IN) {
+    if (current_length + 1 >= MAX_LEN) {
+      current_length = MAX_LEN - 1;
+    }
+    histogram[current_length - 1]++;
+  }
+  for (int i = 0; i < MAX_LEN; i++) {
+    printf("%d: ", i + 1);
+    for (int j = 0; j < histogram[i]; j++) {
+      printf("*");
+    }
+    printf("\n");
   }
   return 0;
 }
